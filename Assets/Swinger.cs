@@ -24,6 +24,8 @@ public class Swinger : MonoBehaviour
 
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Space)) StartRotation();
+
         // Determine the target rotation angle
         float targetRotation = isRotating ? targetRotationAngle : 0f;
 
