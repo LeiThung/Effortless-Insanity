@@ -9,23 +9,14 @@ public class Swinger : MonoBehaviour
     [SerializeField] private Transform pivotPoint; // The point to rotate around
     [SerializeField] private float rotationSpeed = 10f; // Speed of rotation
     [SerializeField] private float targetRotationAngle = 30f; // Angle to rotate when button is pressed
+    [SerializeField] private float force = 2;
 
     private float currentRotation = 0f; // Tracks the current rotation angle
     private bool isRotating = false; // Tracks if the button is pressed
 
-    [Header("UI Button")]
-    [SerializeField] private Button rotateButton; // The UI Button to trigger rotation
-
-    void Start()
-    {
-        // Register the button click event listeners
-        rotateButton.onClick.AddListener(() => StartRotation());
-    }
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space)) StartRotation();
-
         // Determine the target rotation angle
         float targetRotation = isRotating ? targetRotationAngle : 0f;
 
@@ -43,6 +34,8 @@ public class Swinger : MonoBehaviour
         {
             currentRotation = 0f; // Ensures it doesn't overshoot
         }
+
+        if(Input.GetKeyDown(KeyCode.Space)) StartRotation();
     }
 
     private void StartRotation()
@@ -50,11 +43,25 @@ public class Swinger : MonoBehaviour
         isRotating = true;
 
         // Stop rotation after a short delay to mimic button press
-        Invoke(nameof(StopRotation), 1f); // Adjust duration as needed
+        Invoke(nameof(StopRotation), 0.5f); // Adjust duration as needed
     }
 
     private void StopRotation()
     {
         isRotating = false;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player") && isRotating)
+        {
+            Rigidbody rb = collision.rigidbody;
+            if (rb != null)
+            {
+                // Apply a force to the ball in the direction of the swing
+                Vector3 forceDirection = transform.up.normalized; // Direction perpendicular to the swinging object
+                rb.AddForce(forceDirection * force, ForceMode.Impulse);
+            }
+        }
     }
 }
