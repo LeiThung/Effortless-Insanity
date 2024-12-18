@@ -7,6 +7,8 @@ public class Playerhealth : MonoBehaviour
 {
     [SerializeField] int health;
     [Range(0f, 1f)] public float invincibleAfterHitTime;
+    [SerializeField] SharedData data;
+    [SerializeField] Transform body;
 
     private float timer;
 
@@ -20,6 +22,7 @@ public class Playerhealth : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Instantiate(data.savedObject, body.transform);
         SethealthDisplay();
     }
 
