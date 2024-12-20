@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SkinSelect : MonoBehaviour
 {
-    public List<GameObject> skins = new List<GameObject>();
+    [SerializeField] Inventory inventory;
+    public List<Skin> skins = new List<Skin>();
     private Vector3 startPosition = Vector3.zero; // Starting position for spawning
     [SerializeField] float xOffset = 20f; // Distance between each skin
     [SerializeField] Button leftBtn;
@@ -18,6 +20,7 @@ public class SkinSelect : MonoBehaviour
 
     private void Start()
     {
+        SortSkins();
         SpawnSkins();
         leftBtn.onClick.AddListener(LeftBtn);
         rightBtn.onClick.AddListener(RightBtn);
@@ -30,11 +33,20 @@ public class SkinSelect : MonoBehaviour
         BtnUpdater();
     }
 
+    private void SortSkins()
+    {
+        skins.AddRange(inventory.skins);
+        skins = skins
+             .OrderBy(item => item.rarity) // First, sort by rarity (ascending)
+             .ThenBy(item => item.number) // Then, sort by another number property (ascending)
+             .ToList();
+    }
+
     private void SpawnSkins()
     {
         Vector3 spawnPosition = startPosition;
 
-        foreach (GameObject skin in skins)
+        foreach (Skin skin in skins)
         {
             if (skin != null) // Ensure the skin is not null
             {
@@ -77,6 +89,9 @@ public class SkinSelect : MonoBehaviour
     public void SetSkinBtn()
     {
         data.savedObject = skins[num];
-        SceneManager.LoadScene(1);
+#if UNITY_EDITOR
+        UnityEditor.EditorUtility.SetDirty(data);
+#endif
+        SceneManager.LoadScene(4);
     }
 }

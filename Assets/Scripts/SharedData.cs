@@ -5,5 +5,5 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "SharedData", menuName = "ScriptableObjects/SharedData")]
 public class SharedData : ScriptableObject
 {
-    public GameObject savedObject;
+    public Skin savedObject;
 }

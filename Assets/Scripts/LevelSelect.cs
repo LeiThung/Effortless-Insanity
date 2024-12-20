@@ -63,4 +63,9 @@ public class LevelSelect : MonoBehaviour
     {
         SceneManager.LoadScene(levelIndex);
     }
+
+    public void Level1Btn()
+    {
+        SceneManager.LoadScene(1);
+    }
 }
